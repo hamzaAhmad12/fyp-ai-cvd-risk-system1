@@ -1,0 +1,63 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+class ApiService {
+  // ⚠️ IMPORTANT: Update this URL!
+  // 
+  // IN CODESPACE:
+  // 1. Go to "PORTS" tab (bottom panel)
+  // 2. Find port 8000
+  // 3. Copy the "Forwarded Address" URL
+  // 4. Paste it below (without trailing slash)
+  // 
+  // Example: 'https://your-codespace-name-8000.app.github.dev'
+  
+ static const String baseUrl = 'https://verbose-space-waffle-r4gv66q46ww52xr5w-8000.app.github.dev';
+  
+static const String baseUrl = 'https://verbose-space-waffle-r4gv66q46ww52xr5w-8000.app.github.dev';  // If running locally (not Codespace), use:
+  // static const String baseUrl = 'http://localhost:8000';
+
+  static Future<Map<String, dynamic>> assessPatient(
+      Map<String, dynamic> data) async {
+    
+    final url = '$baseUrl/assess';
+    print('🔵 Calling: $url');
+    print('📤 Data: $data');
+    
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode(data),
+      );
+
+      print('✅ Status: ${response.statusCode}');
+      print('📥 Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Server returned ${response.statusCode}: ${response.body}');
+      }
+      
+    } catch (e) {
+      print('❌ Error: $e');
+      
+      if (e.toString().contains('Failed to fetch') || 
+          e.toString().contains('Failed host lookup')) {
+        throw Exception(
+          'Cannot connect to backend!\n\n'
+          'Please update baseUrl in api_service.dart:\n'
+          '1. Go to PORTS tab\n'
+          '2. Copy port 8000 URL\n'
+          '3. Paste in api_service.dart'
+        );
+      }
+      
+      throw Exception('Connection failed: $e');
+    }
+  }
+}

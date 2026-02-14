@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pydantic
+scikit-learn
+joblib
+shap
+chromadb
+supabase
+python-dotenv
+shap
